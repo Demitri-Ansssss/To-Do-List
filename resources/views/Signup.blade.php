@@ -40,6 +40,7 @@
             email: "",
             password:'',
             password_confirmation:'',
+            errorMessage: '',
             async submitSignup(){
                 try {
                     const response = await fetch('/api/auth/register', {
