@@ -4,6 +4,15 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
+if (isset($_SERVER['VERCEL_URL'])) {
+    $cachePath = '/tmp/bootstrap-cache';
+    if (!is_dir($cachePath)) {
+        @mkdir($cachePath, 0755, true);
+    }
+    putenv("ILLUMINATE_BOOTSTRAP_CACHE_PATH=$cachePath");
+    $_ENV['ILLUMINATE_BOOTSTRAP_CACHE_PATH'] = $cachePath;
+}
+
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
