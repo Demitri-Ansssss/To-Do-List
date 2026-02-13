@@ -38,7 +38,7 @@
         <div class="space-y-2">
             <flux:button @click="submitLogin" variant="primary" class="w-full">Log in</flux:button>
     
-            <flux:button variant="ghost" class="w-full">Sign up for a new account</flux:button>
+            <flux:button href="/signup" variant="ghost" class="w-full">Sign up for a new account</flux:button>
         </div>
         </flux:card>
     </div>
