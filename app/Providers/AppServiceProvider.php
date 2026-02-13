@@ -20,7 +20,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (config('app.env') === 'production') {
+        // Only force HTTPS when actually deployed on Vercel, not on local development
+        if (env('VERCEL', false)) {
             URL::forceScheme('https');
         }
     }
