@@ -4,29 +4,30 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
-if (isset($_SERVER['VERCEL_URL'])) {
-    $cachePath = '/tmp';
-    $keys = [
-        'APP_CONFIG_CACHE' => $cachePath . '/config.php',
-        'APP_EVENTS_CACHE' => $cachePath . '/events.php',
-        'APP_PACKAGES_CACHE' => $cachePath . '/packages.php',
-        'APP_ROUTES_CACHE' => $cachePath . '/routes.php',
-        'APP_SERVICES_CACHE' => $cachePath . '/services.php',
-        'VIEW_COMPILED_PATH' => $cachePath . '/views',
-    ];
-
-    foreach ($keys as $key => $value) {
-        putenv("$key=$value");
-        $_ENV[$key] = $value;
-        $_SERVER[$key] = $value;
+/*
+|--------------------------------------------------------------------------
+| Vercel Deployment Fix: Handling Read-Only Filesystem
+|--------------------------------------------------------------------------
+*/
+if (isset($_SERVER['VERCEL_URL']) || getenv('VERCEL')) {
+    $tmpBootstrap = '/tmp/bootstrap';
+    $tmpCache = $tmpBootstrap . '/cache';
+    $tmpStorage = '/tmp/storage/framework';
+    
+    // Ensure directories exist
+    foreach ([$tmpCache, $tmpStorage . '/sessions', $tmpStorage . '/views', $tmpStorage . '/cache'] as $dir) {
+        if (!is_dir($dir)) {
+            @mkdir($dir, 0755, true);
+        }
     }
-
-    if (!is_dir($cachePath . '/views')) {
-        @mkdir($cachePath . '/views', 0755, true);
+    
+    // Copy providers.php if it exists
+    if (file_exists(__DIR__ . '/providers.php')) {
+        @copy(__DIR__ . '/providers.php', $tmpBootstrap . '/providers.php');
     }
 }
 
-return Application::configure(basePath: dirname(__DIR__))
+$app = Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
         api: __DIR__.'/../routes/api.php',
@@ -39,3 +40,15 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();
+
+/*
+|--------------------------------------------------------------------------
+| Apply Vercel Path Overrides
+|--------------------------------------------------------------------------
+*/
+if (isset($_SERVER['VERCEL_URL']) || getenv('VERCEL')) {
+    $app->useBootstrapPath('/tmp/bootstrap');
+    $app->useStoragePath('/tmp/storage');
+}
+
+return $app;
