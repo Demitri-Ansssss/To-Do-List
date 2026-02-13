@@ -5,12 +5,25 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
 if (isset($_SERVER['VERCEL_URL'])) {
-    $cachePath = '/tmp/bootstrap-cache';
-    if (!is_dir($cachePath)) {
-        @mkdir($cachePath, 0755, true);
+    $cachePath = '/tmp';
+    $keys = [
+        'APP_CONFIG_CACHE' => $cachePath . '/config.php',
+        'APP_EVENTS_CACHE' => $cachePath . '/events.php',
+        'APP_PACKAGES_CACHE' => $cachePath . '/packages.php',
+        'APP_ROUTES_CACHE' => $cachePath . '/routes.php',
+        'APP_SERVICES_CACHE' => $cachePath . '/services.php',
+        'VIEW_COMPILED_PATH' => $cachePath . '/views',
+    ];
+
+    foreach ($keys as $key => $value) {
+        putenv("$key=$value");
+        $_ENV[$key] = $value;
+        $_SERVER[$key] = $value;
     }
-    putenv("ILLUMINATE_BOOTSTRAP_CACHE_PATH=$cachePath");
-    $_ENV['ILLUMINATE_BOOTSTRAP_CACHE_PATH'] = $cachePath;
+
+    if (!is_dir($cachePath . '/views')) {
+        @mkdir($cachePath . '/views', 0755, true);
+    }
 }
 
 return Application::configure(basePath: dirname(__DIR__))

@@ -9,22 +9,23 @@
 */
 
 // Map cache to /tmp for Vercel (Read-only filesystem)
-$_ENV['ILLUMINATE_BOOTSTRAP_CACHE_PATH'] = '/tmp';
-$_ENV['APP_CONFIG_CACHE'] = '/tmp/config.php';
-$_ENV['APP_EVENTS_CACHE'] = '/tmp/events.php';
-$_ENV['APP_PACKAGES_CACHE'] = '/tmp/packages.php';
-$_ENV['APP_ROUTES_CACHE'] = '/tmp/routes.php';
-$_ENV['APP_SERVICES_PATH'] = '/tmp/services.php';
-$_ENV['VIEW_COMPILED_PATH'] = '/tmp';
+if (isset($_SERVER['VERCEL_URL'])) {
+    $cachePath = '/tmp';
+    $keys = [
+        'APP_CONFIG_CACHE' => $cachePath . '/config.php',
+        'APP_EVENTS_CACHE' => $cachePath . '/events.php',
+        'APP_PACKAGES_CACHE' => $cachePath . '/packages.php',
+        'APP_ROUTES_CACHE' => $cachePath . '/routes.php',
+        'APP_SERVICES_CACHE' => $cachePath . '/services.php',
+        'VIEW_COMPILED_PATH' => $cachePath . '/views',
+    ];
 
-// Also set via putenv for broader compatibility
-putenv('ILLUMINATE_BOOTSTRAP_CACHE_PATH=/tmp');
-putenv('APP_CONFIG_CACHE=/tmp/config.php');
-putenv('APP_EVENTS_CACHE=/tmp/events.php');
-putenv('APP_PACKAGES_CACHE=/tmp/packages.php');
-putenv('APP_ROUTES_CACHE=/tmp/routes.php');
-putenv('APP_SERVICES_PATH=/tmp/services.php');
-putenv('VIEW_COMPILED_PATH=/tmp');
+    foreach ($keys as $key => $value) {
+        putenv("$key=$value");
+        $_ENV[$key] = $value;
+        $_SERVER[$key] = $value;
+    }
+}
 
 try {
     if (getenv('RUN_MIGRATIONS_ON_DEPLOY') === 'true') {
