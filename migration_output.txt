@@ -1,0 +1,24 @@
+﻿
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[08006] [7] connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.77.146.31), port 5432 failed: FATAL:  Tenant or user not found
+connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.77.146.31), port 5432 failed: FATAL:  Tenant or user not found (Connection: pgsql, Host: aws-0-ap-southeast-1.pooler.supabase.com, Port: 5432, Database: postgres, SQL: select exists (select 1 from pg_class c, pg_namespace n where n.nspname = current_schema() and c.relname = 'migrations' and c.relkind in ('r', 'p') and n.oid = c.relnamespace))
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:838
+    834Γûò             $exceptionType = $this->isUniqueConstraintError($e)
+    835Γûò                 ? UniqueConstraintViolationException::class
+    836Γûò                 : QueryException::class;
+    837Γûò 
+  Γ₧£ 838Γûò             throw new $exceptionType(
+    839Γûò                 $this->getNameWithReadWriteType(),
+    840Γûò                 $query,
+    841Γûò                 $this->prepareBindings($bindings),
+    842Γûò                 $e,
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:67
+      PDOException::("SQLSTATE[08006] [7] connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.77.146.31), port 5432 failed: FATAL:  Tenant or user not found
+connection to server at "aws-0-ap-southeast-1.pooler.supabase.com" (52.77.146.31), port 5432 failed: FATAL:  Tenant or user not found")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connectors\Connector.php:67
+      PDO::connect("pgsql:host=aws-0-ap-southeast-1.pooler.supabase.com;dbname='postgres';port=5432;client_encoding='utf8';sslmode=prefer", "postgres.semkfuhhxifqjehhxyzd", Object(SensitiveParameterValue), [])
+
