@@ -37,9 +37,7 @@
     ],
     "env": {
         "APP_ENV": "production",
-        "APP_DEBUG": "true",
-        "APP_KEY": "base64:y6sTl118afQXTXy/eBsqNJKA7J5SREL4Ve/Dod1+824=",
-        "APP_URL": "https://todolist-project-c8ybofi0h-ansoris-projects.vercel.app",
+        "APP_DEBUG": "false",
         "APP_CONFIG_CACHE": "/tmp/config.php",
         "APP_EVENTS_CACHE": "/tmp/events.php",
         "APP_PACKAGES_CACHE": "/tmp/packages.php",

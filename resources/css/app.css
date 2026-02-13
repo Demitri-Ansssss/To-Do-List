@@ -5,5 +5,5 @@
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
-@import '../../vendor/livewire/flux/dist/flux.css';
+@import './flux.css';
 @custom-variant dark (&:where(.dark, .dark *));
